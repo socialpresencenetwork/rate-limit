@@ -6,16 +6,17 @@ namespace RateLimit;
 
 use RateLimit\Exception\LimitExceeded;
 use Redis;
+use RedisCluster;
 use function ceil;
 use function max;
 use function time;
 
 final class RedisRateLimiter extends ConfigurableRateLimiter implements RateLimiter, SilentRateLimiter
 {
-    private Redis $redis;
+    private Redis|RedisCluster $redis;
     private string $keyPrefix;
 
-    public function __construct(Rate $rate, Redis $redis, string $keyPrefix = '')
+    public function __construct(Rate $rate, Redis|RedisCluster $redis, string $keyPrefix = '')
     {
         parent::__construct($rate);
         $this->redis = $redis;
