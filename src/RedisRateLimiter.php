@@ -22,6 +22,19 @@ final class RedisRateLimiter extends ConfigurableRateLimiter implements RateLimi
         $this->redis = $redis;
         $this->keyPrefix = $keyPrefix;
     }
+    
+    public function isLimited(string $identifier) : bool 
+    {
+        $key = $this->key($identifier);
+
+        $current = $this->getCurrent($key);
+
+        if ($current >= $this->rate->getOperations()) {
+            return true;
+        }
+        
+        return false;
+    }
 
     public function limit(string $identifier): void
     {
